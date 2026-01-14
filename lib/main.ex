@@ -19,14 +19,11 @@ defmodule Main do
       gender: :male
     }
     
-    first_three = person |> Codicefiscale.compute()
-    IO.puts(first_three)
+    fiscal_code = Codicefiscale.compute(person)
+    IO.puts("> " <> fiscal_code)
     
     # List all child processes to be supervised
-    children = [
-      # Starts a worker by calling: A.Worker.start_link(arg)
-      # {A.Worker, arg},
-    ]
+    children = []
   
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
