@@ -8,7 +8,19 @@ defmodule Codicefiscale do
   @moduledoc """
   Compute the Italian Codice Fiscale (CF) number.
   """
+  
+  defp check_required_fields(person) do
+    required_keys = [:name, :surname]
+    Enum.all?(required_keys, &Map.has_key?(person, &1)) # => true
+  end
+  
+  
   def compute(person) do
+    
+    if !check_required_fields(person) do
+      raise ArgumentError, message: "Missing required fields"
+    end
+    
     first_three =
       person.surname
       |> get_first_consonants()
