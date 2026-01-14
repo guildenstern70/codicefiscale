@@ -19,8 +19,11 @@ defmodule Main do
       gender: :male
     }
     
+    IO.puts("Person:")
+    IO.inspect(person)
+    
     fiscal_code = Codicefiscale.compute(person)
-    IO.puts("> " <> fiscal_code)
+    IO.puts("> CODICE FISCALE: " <> fiscal_code)
     
     # List all child processes to be supervised
     children = []
