@@ -23,11 +23,11 @@ defmodule Main do
     
     # Define a person as an Elixir map
     person = %{
-      name: "Alessio",
-      surname: "Saltarin",
-      birth_date: ~D[1970-08-26],
-      birth_place: "Milano",
-      gender: :male
+      name: "Lucilla",
+      surname: "Gaspari",
+      birth_date: ~D[1975-03-23],
+      birth_place: "Cuneo",
+      gender: :female
     }
     
     IO.puts("Person:")

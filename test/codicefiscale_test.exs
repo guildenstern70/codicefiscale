@@ -50,7 +50,7 @@ defmodule CodicefiscaleTest do
       birth_place: "Milano",
       gender: :male
     }
-    assert Codicefiscale.compute(person) == "SLTLSS70M26F205"
+    assert Codicefiscale.compute(person) == "SLTLSS70M26F205X"
   end  
   
   test "Partial Code Lucilla" do
@@ -58,11 +58,11 @@ defmodule CodicefiscaleTest do
     person = %{
       name: "Lucilla Loretta Libera",
       surname: "Gaspari",
-      birth_date: ~D[1975-03-17],
+      birth_date: ~D[1975-03-23],
       birth_place: "Cuneo",
       gender: :female
     }
-    assert Codicefiscale.compute(person) == "GSPLLL75C57D205"
+    assert Codicefiscale.compute(person) == "GSPLLL75C63D205T"
   end  
   
   test "Control Code" do

@@ -26,8 +26,9 @@ defmodule Codicefiscale do
     month = get_month(person.birth_date)
     date = get_day(person.birth_date, person.gender)
     comune_code = get_comune_of_birth(person.birth_place)
-
-    first_three <> second_three <> year <> month <> date <> comune_code
+    partial = first_three <> second_three <> year <> month <> date <> comune_code
+	  control_code = get_control_code(partial)
+	  partial <> control_code    
   end
   
   def get_name_consonants(name) do
