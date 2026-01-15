@@ -25,6 +25,5 @@ defmodule ComuniTest do
   test "Milano comune code is F205" do
     assert Comuni.find_comune_code("Milano") == "F205"
   end
-  
-  
+    
 end
