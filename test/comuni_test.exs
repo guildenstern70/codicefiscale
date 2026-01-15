@@ -9,8 +9,9 @@ defmodule ComuniTest do
   doctest Comuni
   
   test "Can load comuni from text file" do
-    comuni = Comuni.comuni_from_text_file("comunidb/listacomuni.csv")
-    assert length(comuni) == 8093
+    { comuni, howmany } = Comuni.comuni_from_csv()
+    assert length(comuni) > 0
+    assert howmany == 8093
   end
   
   

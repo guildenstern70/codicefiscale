@@ -5,10 +5,31 @@
 #
 
 defmodule Comuni do
+  
+  @comunidb "comunidb/comuni.db"
+  @comunicsv "comunidb/listacomuni.csv"
+  
+  def build_db() do
+    if check_db_exists() do
+      IO.puts("Database already exists")
+    else
+      _comuni = comuni_from_csv()
+      create_comuni_table()
+      IO.puts("Database created")
+    end
+  end
+  
+  def check_db_exists() do
+    File.exists?(@comunidb)
+  end
+  
+  def check_comuni_csv_exists() do
+    File.exists?(@comunicsv)
+  end
 
   def create_comuni_table do
-    {:ok, conn} = Exqlite.Sqlite3.open("comuni.db")
-    {:ok, _error} = Exqlite.Sqlite3.execute(conn, """
+    {:ok, conn} = Exqlite.Sqlite3.open(@comunidb)
+    :ok = Exqlite.Sqlite3.execute(conn, """
     CREATE TABLE IF NOT EXISTS comuni 
       (id INTEGER PRIMARY KEY, 
        comune TEXT, 
@@ -22,8 +43,8 @@ defmodule Comuni do
   end
 
   def insert_comune(comune) do
-    {:ok, conn} = Exqlite.Sqlite3.open("comuni.db")
-    {:ok, _} = Exqlite.Sqlite3.execute(conn, """
+    {:ok, conn} = Exqlite.Sqlite3.open(@comunidb)
+    {:ok, statement} = Exqlite.Sqlite3.prepare(conn, """
     
     INSERT INTO comuni (
     nome, 
@@ -33,13 +54,15 @@ defmodule Comuni do
     cap,
     codice) VALUES (?, ?, ?, ?, ?, ?)
     
-    """, [comune.comune, 
+    """)
+    :ok = Exqlite.Sqlite3.bind(statement, [comune.comune, 
           comune.provincia, 
           comune.regione, 
           comune.prefisso, 
           comune.cap, 
           comune.codice])
-    Exqlite.Sqlite3.close(conn)
+    :done = Exqlite.Sqlite3.step(conn, statement)
+    :ok = Exqlite.Sqlite3.close(conn)
   end
   
   
@@ -48,12 +71,20 @@ defmodule Comuni do
     %{id: istat, comune: nome, provincia: provincia, regione: regione, prefisso: prefisso, cap: cap, codice: codice}
   end
   
-  def comuni_from_text_file(file_path) do
-    {:ok, file} = File.read(file_path)
-    file
-    |> String.split("\n")
-    |> Enum.filter(&(&1 != ""))
-    |> Enum.map(&comune_from_text_line/1)
+  def comuni_from_csv() do
+  
+    if check_comuni_csv_exists() == true do
+      {:ok, file} = File.read(@comunicsv)      
+      comuni =file
+      |> String.split("\n")
+      |> Enum.filter(&(&1 != ""))
+      |> Enum.map(&comune_from_text_line/1)
+      {comuni, length(comuni)}
+    else
+      IO.puts("CSV file not found.")
+      {[], :file_not_found}
+    end
+    
   end
   
 end

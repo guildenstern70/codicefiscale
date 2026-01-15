@@ -6,9 +6,20 @@
 
 defmodule Main do
   use Application
-
-  def start(_type, _args) do
-    IO.puts "Codice Fiscale v.0.1.0"
+  
+  def print_help() do
+    IO.puts("Usage: codicefiscale [options]")
+    IO.puts("Options:")
+    IO.puts("  help       Print this help message")
+    IO.puts("  version    Print the version")
+    IO.puts("  builddb    Build the 'comuni' database")
+  end
+  
+  def print_version() do
+    IO.puts("Codice Fiscale v.0.1.0")
+  end
+  
+  def compute_fiscal_code() do
     
     # Define a person as an Elixir map
     person = %{
@@ -24,6 +35,25 @@ defmodule Main do
     
     fiscal_code = Codicefiscale.compute(person)
     IO.puts("> CODICE FISCALE: " <> fiscal_code)
+  end
+  
+  def build_comuni_db() do
+    Comuni.build_db()
+  end
+
+  def start(_type, _args) do
+    IO.puts "Codice Fiscale v.0.1.0"
+    IO.puts "Running in " <> File.cwd!
+    arguments = System.argv()
+    
+    cond do
+      arguments == [] -> compute_fiscal_code()
+      arguments == ["help"] -> print_help()
+      arguments == ["version"] -> print_version()
+      arguments == ["builddb"] -> build_comuni_db()
+      true -> :ok
+    end
+    
     
     # List all child processes to be supervised
     children = []
