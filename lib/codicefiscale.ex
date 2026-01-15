@@ -32,8 +32,9 @@ defmodule Codicefiscale do
     year = get_year(person.birth_date)
     month = get_month(person.birth_date)
     date = get_day(person.birth_date, person.gender)
+    comune_code = get_comune_of_birth(person.birth_place)
       
-    first_three <> second_three <> year <> month <> date
+    first_three <> second_three <> year <> month <> date <> comune_code
   end
   
   def get_first_consonants(word) do
@@ -65,6 +66,10 @@ defmodule Codicefiscale do
       month == 11 -> "S"
       month == 12 -> "T"
     end
+  end
+  
+  def get_comune_of_birth(comune) do
+    Comuni.find_comune_code(comune)
   end
   
   def get_day(birthdate, gender) do
