@@ -13,17 +13,18 @@ defmodule Comuni do
     if check_db_exists() do
       IO.puts("Database already exists")
     else
-      _comuni = comuni_from_csv()
+      { comuni, _ } = comuni_from_csv()
       create_comuni_table()
+      insert_comuni(comuni)
       IO.puts("Database created")
     end
   end
   
-  def check_db_exists() do
+  defp check_db_exists() do
     File.exists?(@comunidb)
   end
   
-  def check_comuni_csv_exists() do
+  defp check_comuni_csv_exists() do
     File.exists?(@comunicsv)
   end
 
@@ -31,7 +32,7 @@ defmodule Comuni do
     {:ok, conn} = Exqlite.Sqlite3.open(@comunidb)
     :ok = Exqlite.Sqlite3.execute(conn, """
     CREATE TABLE IF NOT EXISTS comuni 
-      (id INTEGER PRIMARY KEY, 
+      (id TEXT PRIMARY KEY, 
        comune TEXT, 
        provincia TEXT,
        regione TEXT,
@@ -41,21 +42,31 @@ defmodule Comuni do
     """)
     Exqlite.Sqlite3.close(conn)
   end
+  
+  def insert_comuni(comuni_list) do
+    for comune <- comuni_list do
+      IO.puts("Inserting comune > " <> comune.comune)
+      insert_comune(comune)
+    end
+  end
 
   def insert_comune(comune) do
     {:ok, conn} = Exqlite.Sqlite3.open(@comunidb)
     {:ok, statement} = Exqlite.Sqlite3.prepare(conn, """
     
     INSERT INTO comuni (
-    nome, 
+    id,
+    comune, 
     provincia,
     regione,
     prefisso,
     cap,
-    codice) VALUES (?, ?, ?, ?, ?, ?)
+    codice) VALUES (?, ?, ?, ?, ?, ?, ?)
     
     """)
-    :ok = Exqlite.Sqlite3.bind(statement, [comune.comune, 
+    :ok = Exqlite.Sqlite3.bind(statement, [
+          comune.id, 
+          comune.comune, 
           comune.provincia, 
           comune.regione, 
           comune.prefisso, 
@@ -72,7 +83,6 @@ defmodule Comuni do
   end
   
   def comuni_from_csv() do
-  
     if check_comuni_csv_exists() == true do
       {:ok, file} = File.read(@comunicsv)      
       comuni =file
@@ -84,7 +94,5 @@ defmodule Comuni do
       IO.puts("CSV file not found.")
       {[], :file_not_found}
     end
-    
   end
-  
 end

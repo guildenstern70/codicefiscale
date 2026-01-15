@@ -38,7 +38,9 @@ defmodule Main do
   end
   
   def build_comuni_db() do
+    IO.puts("Building 'comuni' database...")
     Comuni.build_db()
+    IO.puts("Database built")
   end
 
   def start(_type, _args) do
