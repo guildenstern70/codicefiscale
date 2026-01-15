@@ -13,9 +13,9 @@ defmodule Comuni do
     if check_db_exists() do
       IO.puts("Database already exists")
     else
-      { comuni, _ } = comuni_from_csv()
+      comuni_tuple = comuni_from_csv()
       create_comuni_table()
-      insert_comuni(comuni)
+      insert_comuni(comuni_tuple)
       IO.puts("Database created")
     end
   end
@@ -43,9 +43,10 @@ defmodule Comuni do
     Exqlite.Sqlite3.close(conn)
   end
   
-  def insert_comuni(comuni_list) do
+  def insert_comuni(comuni_tuple) do
+    _howmany = elem(comuni_tuple, 1)
+    comuni_list = elem(comuni_tuple, 0)
     for comune <- comuni_list do
-      IO.puts("Inserting comune > " <> comune.comune)
       insert_comune(comune)
     end
   end

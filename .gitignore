@@ -24,4 +24,4 @@ codicefiscale-*.tar
 
 # Embedded Database
 comunidb/comuni.db
-
+comunidb/comuni.db-journal
