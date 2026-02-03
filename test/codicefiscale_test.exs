@@ -74,20 +74,9 @@ defmodule CodicefiscaleTest do
     evens = Codicefiscale.get_even_or_odd_chars(partial_code, :even)
     odds = Codicefiscale.get_even_or_odd_chars(partial_code, :odd)
     even_values = Enum.map(evens, &Codicefiscale.get_control_code_even/1)
-    IO.puts("Evens")
-    IO.inspect(evens)
-    IO.inspect(even_values)
     odd_values = Enum.map(odds, &Codicefiscale.get_control_code_odd/1)
-    IO.puts("Odds")
-    IO.inspect(odds)
-    IO.inspect(odd_values)
     even_value = Enum.sum(even_values)
     odd_value = Enum.sum(odd_values)
-    IO.puts("Sum")
-    IO.puts("Even value: #{even_value}")
-    IO.puts("Odd value: #{odd_value}")
-    IO.puts("Sum: #{even_value + odd_value}")
-    IO.puts("Remainder: #{rem(even_value + odd_value, 26)}")
     assert rem(even_value + odd_value, 26) == 12
   end
   
