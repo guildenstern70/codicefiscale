@@ -49,17 +49,14 @@ defmodule Codicefiscale do
     if String.length(partial_fiscal_code) != 15 do
       raise ArgumentError, message: "Partial fiscal code must be exactly 16 characters long"
     end
-
     even_value =
       get_even_or_odd_chars(partial_fiscal_code, :even)
       |> Enum.map(&get_control_code_even/1)
       |> Enum.sum()
-
     odd_value =
       get_even_or_odd_chars(partial_fiscal_code, :odd)
       |> Enum.map(&get_control_code_odd/1)
       |> Enum.sum()
-
     rem(even_value + odd_value, 26)
     |> get_remainder_code
   end
@@ -69,9 +66,8 @@ defmodule Codicefiscale do
   def get_even_or_odd_chars(partial_fiscal_code, even_odd) do
     shift =
       case even_odd do
-        :even -> 0
-        :odd -> 1
-        true -> 1
+        :even -> 1
+        :odd -> 0
       end
 
     String.graphemes(partial_fiscal_code)
@@ -133,7 +129,7 @@ defmodule Codicefiscale do
     Enum.all?(required_keys, &Map.has_key?(person, &1))
   end
 
-  defp get_control_code_even(character) do
+  def get_control_code_even(character) do
     cond do
       character == "A" -> 0
       character == "0" -> 0
@@ -174,7 +170,7 @@ defmodule Codicefiscale do
     end
   end
 
-  defp get_control_code_odd(character) do
+  def get_control_code_odd(character) do
     cond do
       character == "A" -> 1
       character == "0" -> 1
@@ -259,11 +255,16 @@ defmodule Codicefiscale do
   end
 
   defp get_first_consonants_two(word) do
-    upword =
+    up =
       word
       |> String.upcase()
+      |> String.replace(" ", "")
 
-    upword <> "X"
+    consonants = get_consonants(up)
+    first_two = consonants |> Enum.take(2) |> Enum.join() |> String.pad_trailing(2, "X")
+    first_vowel = up |> String.graphemes() |> Enum.filter(&(&1 in ["A", "E", "I", "O", "U"])) |> Enum.at(0, "X")
+
+    first_two <> first_vowel
   end
 
   defp get_consonants(word) do
