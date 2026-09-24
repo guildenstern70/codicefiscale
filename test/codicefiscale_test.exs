@@ -153,4 +153,25 @@ defmodule CodicefiscaleTest do
       apply(Codicefiscale, :compute, [person])
     end
   end
+
+  test "Surname consonants with 2 consonants (Baudo)" do
+    assert Codicefiscale.get_surname_consonants("Baudo") == "BDA"
+  end
+
+  test "Name consonants with 1 consonant (Ada, Ugo)" do
+    assert Codicefiscale.get_name_consonants("Ada") == "DAA"
+    assert Codicefiscale.get_name_consonants("Ugo") == "GUO"
+  end
+
+  test "Fiscal Code Pippo Baudo" do
+    person = %{
+      name: "Pippo",
+      surname: "Baudo",
+      birth_date: ~D[1940-02-21],
+      birth_place: "Caltanissetta",
+      gender: :male
+    }
+
+    assert Codicefiscale.compute(person) == "BDAPPP40B21B429D"
+  end
 end

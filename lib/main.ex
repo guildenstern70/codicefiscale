@@ -7,6 +7,8 @@
 defmodule Main do
   use Application
 
+  @version Mix.Project.config()[:version]
+
   def print_help() do
     IO.puts("Usage: mix run -- [option]")
     IO.puts("Options:")
@@ -16,7 +18,7 @@ defmodule Main do
   end
 
   def print_version() do
-    IO.puts("Codice Fiscale v.0.1.0")
+    IO.puts("Codice Fiscale v.#{@version}")
   end
 
   def compute_fiscal_code() do
@@ -170,7 +172,7 @@ defmodule Main do
   end
 
   def start(_type, _args) do
-    IO.puts("Codice Fiscale v.0.1.0")
+    IO.puts("Codice Fiscale v.#{@version}")
     IO.puts("Running in " <> File.cwd!())
     arguments = System.argv()
 

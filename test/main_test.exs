@@ -152,6 +152,18 @@ defmodule MainTest do
       assert output =~ "> CODICE FISCALE: SLTLSS70M26F205X"
     end
 
+    test "generates fiscal code for Pippo Baudo" do
+      input = "Pippo\nBaudo\n1940-02-21\nCaltanissetta\nM\n"
+
+      output =
+        capture_io([input: input], fn ->
+          result = Main.compute_fiscal_code()
+          assert result == {:ok, "BDAPPP40B21B429D"}
+        end)
+
+      assert output =~ "> CODICE FISCALE: BDAPPP40B21B429D"
+    end
+
     test "outputs error and does not generate code when birth place does not exist" do
       input = "Harry\nPotter\n1980-07-31\nHogwarts\nM\n"
 
@@ -177,6 +189,27 @@ defmodule MainTest do
 
       assert output =~ "Error: Invalid birth date"
       refute output =~ "> CODICE FISCALE:"
+    end
+  end
+
+  describe "print_version/0 and print_help/0" do
+    test "print_version outputs current version from mix.exs" do
+      output =
+        capture_io(fn ->
+          Main.print_version()
+        end)
+
+      assert output =~ "Codice Fiscale v.#{Mix.Project.config()[:version]}"
+    end
+
+    test "print_help outputs usage instructions" do
+      output =
+        capture_io(fn ->
+          Main.print_help()
+        end)
+
+      assert output =~ "Usage: mix run -- [option]"
+      assert output =~ "version    Print the version"
     end
   end
 end

@@ -39,20 +39,32 @@ defmodule Codicefiscale do
   def get_name_consonants(name) do
     name_consonants = get_consonants(name)
     name_consonants_len = length(name_consonants)
+    name_len = String.length(name |> String.replace(" ", ""))
 
     cond do
-      name_consonants_len == 0 -> "XXX"
-      name_consonants_len == 1 -> get_first_consonants_one(name)
-      name_consonants_len == 2 -> get_first_consonants_two(name)
-      name_consonants_len == 3 -> get_surname_consonants_std(name_consonants)
-      name_consonants_len > 3 -> get_name_consonants_std(name_consonants)
+      name_consonants_len > 3 ->
+        get_name_consonants_std(name_consonants)
+
+      name_consonants_len == 3 ->
+        get_surname_consonants_std(name_consonants)
+
+      name_consonants_len == 2 ->
+        get_first_consonants_two(name)
+
+      name_consonants_len == 1 and name_len <= 2 ->
+        get_first_consonants_two(name)
+
+      true ->
+        (name_consonants ++ get_vowels(name) ++ ["X", "X", "X"])
+        |> Enum.take(3)
+        |> Enum.join()
     end
   end
 
   def get_control_code(partial_fiscal_code) do
-    # Check that 'partial_fiscal_code' is exactly 16 characters long
+    # Check that 'partial_fiscal_code' is exactly 15 characters long
     if String.length(partial_fiscal_code) != 15 do
-      raise ArgumentError, message: "Partial fiscal code must be exactly 16 characters long"
+      raise ArgumentError, message: "Partial fiscal code must be exactly 15 characters long"
     end
 
     even_value =
@@ -86,12 +98,23 @@ defmodule Codicefiscale do
 
   def get_surname_consonants(surname) do
     surname_consonants = get_consonants(surname)
-    surname_len = String.length(surname)
+    surname_consonants_len = length(surname_consonants)
+    surname_len = String.length(surname |> String.replace(" ", ""))
 
     cond do
-      surname_len == 1 -> get_first_consonants_one(surname)
-      surname_len == 2 -> get_first_consonants_two(surname)
-      surname_len > 2 -> get_surname_consonants_std(surname_consonants)
+      surname_consonants_len >= 3 ->
+        get_surname_consonants_std(surname_consonants)
+
+      surname_consonants_len == 2 ->
+        get_first_consonants_two(surname)
+
+      surname_consonants_len == 1 and surname_len <= 2 ->
+        get_first_consonants_two(surname)
+
+      true ->
+        (surname_consonants ++ get_vowels(surname) ++ ["X", "X", "X"])
+        |> Enum.take(3)
+        |> Enum.join()
     end
   end
 
@@ -254,14 +277,6 @@ defmodule Codicefiscale do
     Comuni.find_comune_code(comune)
   end
 
-  defp get_first_consonants_one(word) do
-    upword =
-      word
-      |> String.upcase()
-
-    upword <> "XX"
-  end
-
   defp get_first_consonants_two(word) do
     up =
       word
@@ -325,5 +340,13 @@ defmodule Codicefiscale do
       Enum.at(name_consonants, 3)
     ]
     |> Enum.join()
+  end
+
+  defp get_vowels(word) do
+    word
+    |> String.replace(" ", "")
+    |> String.upcase()
+    |> String.graphemes()
+    |> Enum.filter(&(&1 in ["A", "E", "I", "O", "U"]))
   end
 end
