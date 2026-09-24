@@ -8,11 +8,11 @@ defmodule Main do
   use Application
   
   def print_help() do
-    IO.puts("Usage: codicefiscale [options]")
+    IO.puts("Usage: mix run -- [option]")
     IO.puts("Options:")
     IO.puts("  help       Print this help message")
     IO.puts("  version    Print the version")
-    IO.puts("  builddb    Build the 'comuni' database")
+    IO.puts("  createdb   Create the 'comuni' database")
   end
   
   def print_version() do
@@ -49,9 +49,9 @@ defmodule Main do
     
     cond do
       arguments == [] -> compute_fiscal_code()
-      arguments == ["help"] -> print_help()
-      arguments == ["version"] -> print_version()
-      arguments == ["builddb"] -> build_comuni_db()
+      arguments in [["help"], ["--help"], ["-h"]] -> print_help()
+      arguments in [["version"], ["--version"], ["-v"]] -> print_version()
+      arguments in [["createdb"], ["builddb"]] -> build_comuni_db()
       true -> :ok
     end
     

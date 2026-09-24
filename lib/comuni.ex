@@ -112,7 +112,7 @@ defmodule Comuni do
   end
   
   defp check_db_exists() do
-    File.exists?(@comunidb)
+    File.exists?(@comunidb) and File.stat!(@comunidb).size > 0
   end
   
   defp check_comuni_csv_exists() do
