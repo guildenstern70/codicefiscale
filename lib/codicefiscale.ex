@@ -26,11 +26,16 @@ defmodule Codicefiscale do
     month = get_month(person.birth_date)
     date = get_day(person.birth_date, person.gender)
     comune_code = get_comune_of_birth(person.birth_place)
+
+    if is_nil(comune_code) do
+      raise ArgumentError, message: "Birth place '#{person.birth_place}' not found"
+    end
+
     partial = first_three <> second_three <> year <> month <> date <> comune_code
-	  control_code = get_control_code(partial)
-	  partial <> control_code    
+    control_code = get_control_code(partial)
+    partial <> control_code
   end
-  
+
   def get_name_consonants(name) do
     name_consonants = get_consonants(name)
     name_consonants_len = length(name_consonants)
@@ -49,14 +54,17 @@ defmodule Codicefiscale do
     if String.length(partial_fiscal_code) != 15 do
       raise ArgumentError, message: "Partial fiscal code must be exactly 16 characters long"
     end
+
     even_value =
       get_even_or_odd_chars(partial_fiscal_code, :even)
       |> Enum.map(&get_control_code_even/1)
       |> Enum.sum()
+
     odd_value =
       get_even_or_odd_chars(partial_fiscal_code, :odd)
       |> Enum.map(&get_control_code_odd/1)
       |> Enum.sum()
+
     rem(even_value + odd_value, 26)
     |> get_remainder_code
   end
@@ -79,6 +87,7 @@ defmodule Codicefiscale do
   def get_surname_consonants(surname) do
     surname_consonants = get_consonants(surname)
     surname_len = String.length(surname)
+
     cond do
       surname_len == 1 -> get_first_consonants_one(surname)
       surname_len == 2 -> get_first_consonants_two(surname)
@@ -124,8 +133,7 @@ defmodule Codicefiscale do
   end
 
   defp check_required_fields(person) do
-    required_keys = [:name, :surname, :birth_date]
-    # => true
+    required_keys = [:name, :surname, :birth_date, :birth_place, :gender]
     Enum.all?(required_keys, &Map.has_key?(person, &1))
   end
 
@@ -262,7 +270,12 @@ defmodule Codicefiscale do
 
     consonants = get_consonants(up)
     first_two = consonants |> Enum.take(2) |> Enum.join() |> String.pad_trailing(2, "X")
-    first_vowel = up |> String.graphemes() |> Enum.filter(&(&1 in ["A", "E", "I", "O", "U"])) |> Enum.at(0, "X")
+
+    first_vowel =
+      up
+      |> String.graphemes()
+      |> Enum.filter(&(&1 in ["A", "E", "I", "O", "U"]))
+      |> Enum.at(0, "X")
 
     first_two <> first_vowel
   end
@@ -313,5 +326,4 @@ defmodule Codicefiscale do
     ]
     |> Enum.join()
   end
-
 end

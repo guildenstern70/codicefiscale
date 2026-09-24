@@ -87,7 +87,7 @@ mix test
 
 ### Run Application (CLI)
 ```bash
-mix run               # Executes sample calculation in Main.compute_fiscal_code/0
+mix run               # Interactively prompts for person details and calculates fiscal code
 mix run -- help       # Displays CLI options
 mix run -- version    # Displays version
 mix run -- createdb   # Generates SQLite database

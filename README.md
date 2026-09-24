@@ -33,11 +33,20 @@ Database created
 
 ## Running the Program
 
-To run the default fiscal code calculation:
+To run the interactive fiscal code calculation:
 
 ```bash
 mix run
 ```
+
+You will be interactively prompted to enter the person's details:
+1. **NAME**
+2. **SURNAME**
+3. **BIRTH DATE** (format: `YYYY-MM-DD` or `DD/MM/YYYY`)
+4. **BIRTH PLACE** (Italian municipality name, e.g. `Milano` or `Cuneo`)
+5. **GENDER** (`M` or `F`)
+
+The program verifies that all inputs are valid and checks that the birth place exists in the database. If any input is invalid (e.g. municipality does not exist), an error message is displayed.
 
 ### Options & Help Menu
 
@@ -54,7 +63,7 @@ Available options:
 | `help` | Print the help menu | `mix run -- help` |
 | `version` | Print the application version | `mix run -- version` |
 | `createdb` | Create and populate the SQLite database from CSV | `mix run -- createdb` |
-| *(none)* | Execute the default fiscal code calculation | `mix run` |
+| *(none)* | Interactively prompt for parameters and calculate fiscal code | `mix run` |
 
 #### Help Menu Output
 
