@@ -22,11 +22,11 @@ defmodule Main do
   end
 
   def compute_fiscal_code() do
-    name = prompt_input("1) NAME: ")
-    surname = prompt_input("2) SURNAME: ")
-    birth_date_str = prompt_input("3) BIRTH DATE (YYYY-MM-DD): ")
-    birth_place_str = prompt_input("4) BIRTH PLACE: ")
-    gender_str = prompt_input("5) GENDER (M/F): ")
+    name = prompt_input("1) Nome: ")
+    surname = prompt_input("2) Cognome: ")
+    birth_date_str = prompt_input("3) Data di nascita (YYYY-MM-DD): ")
+    birth_place_str = prompt_input("4) Luogo di nascita: ")
+    gender_str = prompt_input("5) Sesso (M/F): ")
 
     case validate_input(name, surname, birth_date_str, birth_place_str, gender_str) do
       {:ok, person} ->
@@ -173,7 +173,6 @@ defmodule Main do
 
   def start(_type, _args) do
     IO.puts("Codice Fiscale v.#{@version}")
-    IO.puts("Running in " <> File.cwd!())
     arguments = System.argv()
 
     cond do
